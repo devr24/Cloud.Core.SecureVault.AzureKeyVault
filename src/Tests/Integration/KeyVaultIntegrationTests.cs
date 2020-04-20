@@ -8,17 +8,16 @@ using Microsoft.Azure.KeyVault.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
 {
     [IsIntegration]
-    public class KeyVaultTests
+    public class KeyVaultIntegrationTests
     {
         private readonly ISecureVault _kvClient;
         private readonly IConfiguration _config;
 
-        public KeyVaultTests()
+        public KeyVaultIntegrationTests()
         {
             _config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
             _kvClient = new KeyVault(new ServicePrincipleConfig
@@ -139,57 +138,6 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
                 AppId = "test"
             }, new[] { "test1" }));
         }
-
-        /// <summary>Check the ISecureVault is added to the service collection when using the new extension method.</summary>
-        [Fact, IsUnit]
-        public void Test_KeyVault_ServiceCollectionAddKeyVault()
-        {
-            // Principle needs "Set" permissions to run this.
-            IServiceCollection serviceCollection = new FakeServiceCollection();
-            serviceCollection.AddKeyVaultSingleton(new MsiConfig { KeyVaultInstanceName = "test" });
-
-            serviceCollection.Contains(new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault))).Should().BeTrue();
-            serviceCollection.Clear();
-
-            serviceCollection.AddKeyVaultSingleton(new ServicePrincipleConfig { KeyVaultInstanceName = "test", AppId = "test", AppSecret = "test", TenantId = "test" });
-            serviceCollection.Contains(new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault))).Should().BeTrue();
-        }
-
-        /// <summary>Check the validate method carries out the validation as expected.</summary>
-        [Fact, IsUnit]
-        public void Test_KeyVault_ConfigValidate()
-        {
-            var spConfigGood = new ServicePrincipleConfig { KeyVaultInstanceName = "test", AppSecret = "test", TenantId = "test", AppId = "test" };
-            var spConfigBad = new ServicePrincipleConfig();
-            var spConfigString = spConfigGood.ToString();
-
-            var msiConfigGood = new MsiConfig { KeyVaultInstanceName = "test" };
-            var msiConfigBad = new MsiConfig();
-            var msiConfigString = msiConfigGood.ToString();
-
-            AssertExtensions.DoesNotThrow(() => spConfigGood.Validate());
-            Assert.Throws<ArgumentException>(() => spConfigBad.Validate());
-
-            spConfigBad.KeyVaultInstanceName = "test";
-            Assert.Throws<ArgumentException>(() => spConfigBad.Validate());
-
-            spConfigBad.AppId = "test";
-            Assert.Throws<ArgumentException>(() => spConfigBad.Validate());
-
-            spConfigBad.AppSecret = "test";
-            Assert.Throws<ArgumentException>(() => spConfigBad.Validate());
-
-            AssertExtensions.DoesNotThrow(() => msiConfigGood.Validate());
-            Assert.Throws<ArgumentException>(() => msiConfigBad.Validate());
-        }
-
-        /// <summary>Verify the ToString method contains the expected output.</summary>
-        [Fact, IsUnit]
-        public void Test_KeyVault_ToString()
-        {
-            Assert.Contains(_config.GetValue<string>("KeyVaultInstanceName"), ((KeyVault)_kvClient).ServicePrincipleConfig.ToString());
-        }
-
     }
 
     public class FakeServiceCollection : IServiceCollection

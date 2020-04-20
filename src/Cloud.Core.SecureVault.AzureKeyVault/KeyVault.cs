@@ -4,9 +4,9 @@
     using System;
     using Microsoft.Azure.KeyVault;
     using System.Threading.Tasks;
-    using JetBrains.Annotations;
     using Microsoft.IdentityModel.Clients.ActiveDirectory;
     using Microsoft.Azure.Services.AppAuthentication;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Azure KeyVault specific implementation of Secure Vault.
@@ -20,6 +20,8 @@
         internal DateTimeOffset? TokenExpiryTime;
 
         private IKeyVaultClient _client; // only to be used by the "Client" property.
+
+        public string Name { get; set; }
 
         internal IKeyVaultClient Client
         {
@@ -54,6 +56,7 @@
 
             MsiConfig = config;
             InstanceUri = config.Uri;
+            Name = config.KeyVaultInstanceName;
         }
 
         /// <summary>Initializes a new instance of the KeyVault class using Service Principle security.</summary>
@@ -65,6 +68,7 @@
 
             ServicePrincipleConfig = config;
             InstanceUri = config.Uri;
+            Name = config.KeyVaultInstanceName;
         }
 
         /// <inheritdoc />

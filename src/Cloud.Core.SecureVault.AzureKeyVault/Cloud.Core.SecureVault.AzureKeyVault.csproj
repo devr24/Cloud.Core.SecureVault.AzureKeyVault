@@ -9,7 +9,7 @@
     <PackageTags>Cloud.Core .net-Core Core Cloud.Core.SecureVault KeyVault Azure</PackageTags>
     <PackageReleaseNotes />
     <Description>An Azure specific Key Vault implementation of Secure Vault for storing secure keys and secrets.</Description>
-    <Copyright>Robert McCabe</Copyright>
+    <Copyright>Aylesbury Solutions Ltd</Copyright>
     <Version>3.1</Version>
 	<PackageIconUrl>https://cloud1core.blob.core.windows.net/icons/CC.png</PackageIconUrl>
     <Authors>Robert McCabe</Authors>
@@ -19,10 +19,10 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="Cloud.Core" Version="3.1.3438.6" />
+    <PackageReference Include="Cloud.Core" Version="2.1.3513.106" />
     <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.2.1" />
-    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.4.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.7" />
   </ItemGroup>
 
 </Project>
