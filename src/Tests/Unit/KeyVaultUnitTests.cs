@@ -20,12 +20,24 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         {
             // Principle needs "Set" permissions to run this.
             IServiceCollection serviceCollection = new FakeServiceCollection();
-            serviceCollection.AddKeyVaultSingleton(new MsiConfig { KeyVaultInstanceName = "test" });
+            serviceCollection.AddKeyVaultSingleton(new MsiConfig { KeyVaultInstanceName = "instance" });
 
             serviceCollection.Contains(new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault))).Should().BeTrue();
             serviceCollection.Clear();
 
-            serviceCollection.AddKeyVaultSingleton(new ServicePrincipleConfig { KeyVaultInstanceName = "test", AppId = "test", AppSecret = "test", TenantId = "test" });
+            serviceCollection.AddKeyVaultSingleton(new ServicePrincipleConfig { KeyVaultInstanceName = "instance", AppId = "test", AppSecret = "test", TenantId = "test" });
+            serviceCollection.Contains(new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault))).Should().BeTrue();
+            serviceCollection.Clear();
+
+            serviceCollection.AddKeyVaultSingleton("instance");
+            serviceCollection.Contains(new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault))).Should().BeTrue();
+            serviceCollection.Clear();
+
+            serviceCollection.AddKeyVaultSingletonNamed("key", "instance");
+            serviceCollection.Contains(new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault))).Should().BeTrue();
+            serviceCollection.Clear();
+
+            serviceCollection.AddKeyVaultSingletonNamed("key", new ServicePrincipleConfig { KeyVaultInstanceName = "instance", AppId = "test", AppSecret = "test", TenantId = "test" });
             serviceCollection.Contains(new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault))).Should().BeTrue();
         }
 

@@ -142,11 +142,11 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
 
     public class FakeServiceCollection : IServiceCollection
     {
-        List<ServiceDescriptor> _serviceDescriptors = new List<ServiceDescriptor>();
+        IEnumerable<ServiceDescriptor> _serviceDescriptors = new List<ServiceDescriptor>();
 
         public IEnumerator<ServiceDescriptor> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _serviceDescriptors.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -156,12 +156,12 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
 
         public void Add(ServiceDescriptor item)
         {
-            _serviceDescriptors.Add(item);
+            ((List<ServiceDescriptor>)_serviceDescriptors).Add(item);
         }
 
         public void Clear()
         {
-            _serviceDescriptors.Clear();
+            ((List<ServiceDescriptor>)_serviceDescriptors).Clear();
         }
 
         public bool Contains(ServiceDescriptor item)
@@ -183,9 +183,9 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         public bool IsReadOnly { get; }
         public int IndexOf(ServiceDescriptor item)
         {
-            for (int i = 0; i < _serviceDescriptors.Count; i++)
+            for (int i = 0; i < ((List<ServiceDescriptor>)_serviceDescriptors).Count; i++)
             {
-                if (_serviceDescriptors[i].ServiceType == item?.ServiceType)
+                if (((List<ServiceDescriptor>)_serviceDescriptors)[i].ServiceType == item?.ServiceType)
                     return i;
             }
 
@@ -195,7 +195,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         public object GetService(ServiceDescriptor item)
         {
             var index = IndexOf(item);
-            var serviceDescriptor = _serviceDescriptors[index];
+            var serviceDescriptor = ((List<ServiceDescriptor>)_serviceDescriptors)[index];
             return serviceDescriptor.ImplementationInstance;
         }
 

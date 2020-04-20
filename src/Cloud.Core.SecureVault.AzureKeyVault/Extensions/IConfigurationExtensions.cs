@@ -7,7 +7,7 @@
     using Cloud.Core;
     using Cloud.Core.SecureVault.AzureKeyVault;
     using Cloud.Core.SecureVault.AzureKeyVault.Config;
-    using Microsoft.Azure.KeyVault.Models;
+    using Azure.KeyVault.Models;
 
     /// <summary>
     /// Class IConfigurationExtensions.
@@ -66,7 +66,7 @@
         /// <param name="builder">The builder.</param>
         /// <param name="keys">The list of keys to load.</param>
         /// <param name="throwNotFoundErrors">If {true}, when a key is missing an invalid operation exception will be thrown. If {false}, the
-        /// error will be supressed and it will just not add the key to the returned collection.</param>
+        /// error will be suppressed and it will just not add the key to the returned collection.</param>
         /// <returns>IConfigurationBuilder.</returns>
         /// <exception cref="InvalidOperationException">
         /// Expecting setting \"KeyVaultInstanceName\" to infer instance name

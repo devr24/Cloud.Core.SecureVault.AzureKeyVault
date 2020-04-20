@@ -1,7 +1,8 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection
 {
     using System;
-    using Microsoft.Extensions.Configuration;
+    using Configuration;
+    using System.Linq;
     using Cloud.Core;
     using Cloud.Core.SecureVault.AzureKeyVault;
     using Cloud.Core.SecureVault.AzureKeyVault.Config;
@@ -44,8 +45,23 @@
         public static IServiceCollection AddKeyVaultSingleton(this IServiceCollection services, MsiConfig config)
         {
             services.AddSingleton<ISecureVault>(new KeyVault(config));
+            AddFactoryIfNotAdded(services);
             return services;
         }
+
+        /// <summary>
+        /// Adds the key vault singleton using Msi authentication.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="instanceName">Name of the key vault instance.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddKeyVaultSingleton(this IServiceCollection services, string instanceName)
+        {
+            services.AddSingleton<ISecureVault>(new KeyVault(new MsiConfig { KeyVaultInstanceName = instanceName }));
+            AddFactoryIfNotAdded(services);
+            return services;
+        }
+
         /// <summary>
         /// Adds the key vault singleton instance using service principle config.
         /// </summary>
@@ -55,7 +71,59 @@
         public static IServiceCollection AddKeyVaultSingleton(this IServiceCollection services, ServicePrincipleConfig config)
         {
             services.AddSingleton<ISecureVault>(new KeyVault(config));
+            AddFactoryIfNotAdded(services);
             return services;
+        }
+
+        /// <summary>
+        /// Adds the key vault singleton named with Msi authentication.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="instanceName">Name of the instance.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddKeyVaultSingletonNamed(this IServiceCollection services, string key, string instanceName)
+        {
+            var instance = new KeyVault(new MsiConfig {KeyVaultInstanceName = instanceName});
+
+            if (!key.IsNullOrEmpty())
+                instance.Name = key;
+
+            services.AddSingleton<ISecureVault>(instance);
+            AddFactoryIfNotAdded(services);
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the key vault singleton named with service principle authentication.
+        /// </summary>
+        /// <param name="services">The services.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="config">The configuration.</param>
+        /// <returns>IServiceCollection.</returns>
+        public static IServiceCollection AddKeyVaultSingletonNamed(this IServiceCollection services, string key, ServicePrincipleConfig config)
+        {
+            var instance = new KeyVault(config);
+
+            if (!key.IsNullOrEmpty())
+                instance.Name = key;
+
+            services.AddSingleton<ISecureVault>(instance);
+            AddFactoryIfNotAdded(services);
+            return services;
+        }
+
+        /// <summary>
+        /// Add the generic service factory from Cloud.Core for the ISecureVault type.  This allows multiple named instances of the same instance.
+        /// </summary>
+        /// <param name="services">Service collection to extend.</param>
+        private static void AddFactoryIfNotAdded(IServiceCollection services)
+        {
+            if (services.All(x => x.ServiceType != typeof(NamedInstanceFactory<ISecureVault>)))
+            {
+                // Service Factory doesn't exist, so we add it to ensure it's always available.
+                services.AddSingleton<NamedInstanceFactory<ISecureVault>>();
+            }
         }
     }
 }
