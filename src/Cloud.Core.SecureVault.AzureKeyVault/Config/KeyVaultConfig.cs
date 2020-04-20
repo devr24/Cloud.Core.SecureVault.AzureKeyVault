@@ -34,7 +34,10 @@
             return $"KeyVaultInstanceName: {KeyVaultInstanceName}, Uri: {Uri}";
         }
 
-        /// <summary>Ensure mandatory properties are set.</summary>
+        /// <summary>
+        /// Ensure mandatory properties are set.
+        /// </summary>
+        /// <exception cref="ArgumentException">KeyVaultInstanceName must be set</exception>
         public void Validate()
         {
             if (KeyVaultInstanceName.IsNullOrEmpty())
@@ -98,7 +101,18 @@
             return $"AppId: {AppId}, TenantId: {TenantId}, KeyVaultInstanceName: {KeyVaultInstanceName}, Uri: {Uri}";
         }
 
-        /// <summary>Ensure mandatory properties are set.</summary>
+        /// <summary>
+        /// Ensure mandatory properties are set.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// KeyVaultInstanceName must be set
+        /// or
+        /// AppId must be set
+        /// or
+        /// AppSecret must be set
+        /// or
+        /// TenantId must be set
+        /// </exception>
         public void Validate()
         {
             if (KeyVaultInstanceName.IsNullOrEmpty())

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Company>Robert McCabe</Company>
     <IsPackable>true</IsPackable>
     <PackageId>Cloud.Core.SecureVault.AzureKeyVault</PackageId>
@@ -10,14 +10,18 @@
     <PackageReleaseNotes />
     <Description>An Azure specific Key Vault implementation of Secure Vault for storing secure keys and secrets.</Description>
     <Copyright>Robert McCabe</Copyright>
-    <Version>1.0</Version>
+    <Version>3.1</Version>
+	<PackageIconUrl>https://cloud1core.blob.core.windows.net/icons/CC.png</PackageIconUrl>
     <Authors>Robert McCabe</Authors>
+    <ProjectGuid>{9a5bfa81-df50-4f98-9054-658107d9096a}</ProjectGuid>
+	<RepositoryUrl>https://github.com/rmccabe24/Cloud.Core.SecureVault.AzureKeyVault</RepositoryUrl>
+	<RepositoryType>Private</RepositoryType>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <PackageReference Include="Cloud.Core" Version="1.0.2408.1" />
-    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.2" />
-    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.2.0-preview" />
+    <PackageReference Include="Cloud.Core" Version="3.1.3438.6" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.2.1" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
   </ItemGroup>
 
