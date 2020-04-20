@@ -1,6 +1,7 @@
 # **Cloud.Core.SecureVault.AzureKeyVault** 
 [![Build status](https://dev.azure.com/cloudcoreproject/CloudCore/_apis/build/status/Cloud.Core/Cloud.Core.SecureStore.AzureKeyVault_Package)](https://dev.azure.com/cloudcoreproject/CloudCore/_build/latest?definitionId=16) ![Code Coverage](https://cloud1core.blob.core.windows.net/codecoveragebadges/Cloud.Core.SecureVault.AzureKeyVault-LineCoverage.png) 
-[![Cloud.Core.Configuration package in Cloud.Core feed in Azure Artifacts](https://feeds.dev.azure.com/cloudcoreproject/dfc5e3d0-a562-46fe-8070-7901ac8e64a0/_apis/public/Packaging/Feeds/8949198b-5c74-42af-9d30-e8c462acada6/Packages/e71ddf20-f66a-45da-b672-c32798cf1e51/Badge)](https://dev.azure.com/cloudcoreproject/CloudCore/_packaging?_a=package&feed=8949198b-5c74-42af-9d30-e8c462acada6&package=e71ddf20-f66a-45da-b672-c32798cf1e51&preferRelease=true)
+[![Cloud.Core.SecureVault.AzureKeyVault package in Cloud.Core feed in Azure Artifacts](https://feeds.dev.azure.com/cloudcoreproject/dfc5e3d0-a562-46fe-8070-7901ac8e64a0/_apis/public/Packaging/Feeds/8949198b-5c74-42af-9d30-e8c462acada6/Packages/3dc38659-5215-4eea-92b6-4d0064638677/Badge)](https://dev.azure.com/cloudcoreproject/CloudCore/_packaging?_a=package&feed=8949198b-5c74-42af-9d30-e8c462acada6&package=3dc38659-5215-4eea-92b6-4d0064638677&preferRelease=true)
+
 
 
 <div id="description">
@@ -155,7 +156,13 @@ public class Startup
     public void ConfigureServices(IConfiguration config, ILogger logger, IServiceCollection services)
     {
         // Instance name is pulled from config value "KeyVaultInstanceName"
-        builder.AddKeyVaultSingleton(new MsiConfig { KeyVaultInstanceName = "test" });
+        services.AddKeyVaultSingleton(new MsiConfig { KeyVaultInstanceName = "instanceName" });
+	
+	// This could be simplified down to...
+        services.AddKeyVaultSingleton("instanceName");
+	
+	// A named instance can be added as follows
+	services.AddKeyVaultSingletonNamed("key", "instanceName");
     }
     
     ...
@@ -185,7 +192,7 @@ public class Startup
     public void ConfigureServices(IConfiguration config, ILogger logger, IServiceCollection services)
     {
         // Instance used in IConfigurationBuilder will be reused and added to IServiceCollection.
-        builder.AddKeyVaultFromConfiguration(config);
+        services.AddKeyVaultFromConfiguration(config);
     }
     
     ...
