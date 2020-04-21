@@ -29,27 +29,23 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             });
         }
 
-        /// <summary>[Using ServicePrinciple Config) Verify values in KeyVault can be set and got.</summary>
-        [Theory]
-        [InlineData("testKey", "testVal")]
-        public void Test_KeyVault_SetAndGetSecret(string key, string val)
+        /// <summary>Check error when attempting to use Msi Auth.</summary>
+        [Fact]
+        public void Test_KeyVault_MsiError()
         {
             var kvClient = new KeyVault(new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName") });
             Assert.Throws<KeyVaultErrorException>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
-            Assert.Throws<KeyVaultErrorException>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
-
-            // Principle needs "Set" permissions to run this.
-            AssertExtensions.DoesNotThrow(() => _kvClient.SetSecret(key, val).GetAwaiter().GetResult());
-
-            AssertExtensions.DoesNotThrow(() => _kvClient.SetSecret("testKey", "testVal").GetAwaiter().GetResult());
-            _kvClient.GetSecret("testKey").GetAwaiter().GetResult().Should().Be("testVal");
         }
 
         /// <summary>Check the config collection extension method loads secrets as expected.</summary>
         [Fact]
         public void Test_ConfigExtensions_AddKeyVault()
         {
-            AssertExtensions.DoesNotThrow(() => _kvClient.SetSecret("test1", "test1").GetAwaiter().GetResult());
+            AssertExtensions.DoesNotThrow(() =>
+            {
+                _kvClient.SetSecret("test1", "test1").GetAwaiter().GetResult();
+                _kvClient.GetSecret("test1").GetAwaiter().GetResult().Should().Be("test1");
+            });
 
             var config = new ConfigurationBuilder();
 
