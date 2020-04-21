@@ -1,5 +1,8 @@
 # **Cloud.Core.SecureVault.AzureKeyVault** 
-[![Build status](https://dev.azure.com/cloudcoreproject/CloudCore/_apis/build/status/Cloud.Core/Cloud.Core.SecureStore.AzureKeyVault_Package)](https://dev.azure.com/cloudcoreproject/CloudCore/_build/latest?definitionId=16) ![Code Coverage](https://cloud1core.blob.core.windows.net/codecoveragebadges/Cloud.Core.SecureVault.AzureKeyVault-LineCoverage.png) [![Cloud.Core.SecureVault.AzureKeyVault package in Cloud.Core feed in Azure Artifacts](https://feeds.dev.azure.com/cloudcoreproject/dfc5e3d0-a562-46fe-8070-7901ac8e64a0/_apis/public/Packaging/Feeds/8949198b-5c74-42af-9d30-e8c462acada6/Packages/3dc38659-5215-4eea-92b6-4d0064638677/Badge)](https://dev.azure.com/cloudcoreproject/CloudCore/_packaging?_a=package&feed=8949198b-5c74-42af-9d30-e8c462acada6&package=3dc38659-5215-4eea-92b6-4d0064638677&preferRelease=true)
+[![Build status](https://dev.azure.com/cloudcoreproject/CloudCore/_apis/build/status/Cloud.Core%20Packages/Cloud.Core.SecureStore.AzureKeyVault_Package)](https://dev.azure.com/cloudcoreproject/CloudCore/_build/latest?definitionId=16)
+![Code Coverage](https://cloud1core.blob.core.windows.net/codecoveragebadges/Cloud.Core.SecureVault.AzureKeyVault-LineCoverage.png) 
+[![Cloud.Core.SecureVault.AzureKeyVault package in Cloud.Core feed in Azure Artifacts](https://feeds.dev.azure.com/cloudcoreproject/dfc5e3d0-a562-46fe-8070-7901ac8e64a0/_apis/public/Packaging/Feeds/8949198b-5c74-42af-9d30-e8c462acada6/Packages/3dc38659-5215-4eea-92b6-4d0064638677/Badge)](https://dev.azure.com/cloudcoreproject/CloudCore/_packaging?_a=package&feed=8949198b-5c74-42af-9d30-e8c462acada6&package=3dc38659-5215-4eea-92b6-4d0064638677&preferRelease=true)
+
 
 
 
@@ -20,7 +23,7 @@ Below are examples of instantiating each type.
 ### 1. Service Principle
 Create an instance of the KeyVault client with KeyVaultConfig for Service Principle as follows:
 
-```
+```csharp
 var kvConfig = new ServicePrincipleConfig
     {
         AppId = "<appid>",
@@ -41,7 +44,7 @@ SubscriptionId can be accessed through the secret store (this should not be stor
 ### 2. Managed Service Identity (MSI)
 Create an instance of the Blob Storage client with MSI authentication as follows:
 
-```
+```csharp
 var kvConfig = new MsiConfig
     {
         KeyVaultInstanceName = "<kvInstanceName>"
@@ -57,7 +60,7 @@ All that's required is the instance name to connect to.  Authentication runs und
 
 The following code shows an example of grabbing a SubscriptionId from KeyVault (client initialised in samples above):
 
-```
+```csharp
 var subscriptionId = await kv.GetSecret("SubscriptionId");
 ```
 
