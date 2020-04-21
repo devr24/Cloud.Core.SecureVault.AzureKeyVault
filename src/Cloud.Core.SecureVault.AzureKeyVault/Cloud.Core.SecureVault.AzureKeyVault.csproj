@@ -11,11 +11,11 @@
     <Description>An Azure specific Key Vault implementation of Secure Vault for storing secure keys and secrets.</Description>
     <Copyright>Aylesbury Solutions Ltd</Copyright>
     <Version>3.1</Version>
-	<PackageIconUrl>https://cloud1core.blob.core.windows.net/icons/CC.png</PackageIconUrl>
+    <PackageIconUrl>https://cloud1core.blob.core.windows.net/icons/CC.png</PackageIconUrl>
     <Authors>Robert McCabe</Authors>
     <ProjectGuid>{9a5bfa81-df50-4f98-9054-658107d9096a}</ProjectGuid>
-	<RepositoryUrl>https://github.com/rmccabe24/Cloud.Core.SecureVault.AzureKeyVault</RepositoryUrl>
-	<RepositoryType>Private</RepositoryType>
+    <RepositoryUrl>https://github.com/rmccabe24/Cloud.Core.SecureVault.AzureKeyVault</RepositoryUrl>
+    <RepositoryType>Private</RepositoryType>
   </PropertyGroup>
   
   <ItemGroup>
