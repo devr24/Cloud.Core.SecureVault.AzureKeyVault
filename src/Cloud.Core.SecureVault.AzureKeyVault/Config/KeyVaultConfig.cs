@@ -1,11 +1,12 @@
 ﻿namespace Cloud.Core.SecureVault.AzureKeyVault.Config
 {
-    using System;
+    using System.ComponentModel.DataAnnotations;
+    using Validation;
 
     /// <summary>
     /// Msi Configuration for Azure KeyVault connection.
     /// </summary>
-    public class MsiConfig
+    public class MsiConfig : AttributeValidator
     {
         /// <summary>
         /// Gets or sets the name of the key vault instance.
@@ -13,6 +14,7 @@
         /// <value>
         /// The name of the key vault instance.
         /// </value>
+        [Required]
         public string KeyVaultInstanceName { get; set; }
 
         /// <summary>
@@ -33,30 +35,13 @@
         {
             return $"KeyVaultInstanceName: {KeyVaultInstanceName}, Uri: {Uri}";
         }
-
-        /// <summary>
-        /// Ensure mandatory properties are set.
-        /// </summary>
-        /// <exception cref="ArgumentException">KeyVaultInstanceName must be set</exception>
-        public void Validate()
-        {
-            if (KeyVaultInstanceName.IsNullOrEmpty())
-                throw new ArgumentException("KeyVaultInstanceName must be set");
-        }
     }
 
     /// <summary>
     /// Service Principle Configuration for Azure KeyVault connection.
     /// </summary>
-    public class ServicePrincipleConfig {
-
-        /// <summary>
-        /// Gets or sets the name of the key vault instance.
-        /// </summary>
-        /// <value>
-        /// The name of the key vault instance.
-        /// </value>
-        public string KeyVaultInstanceName { get; set; }
+    public class ServicePrincipleConfig : AttributeValidator 
+    {
 
         /// <summary>
         /// Gets the URI of KeyVault.
@@ -67,11 +52,21 @@
         public string Uri => $"https://{KeyVaultInstanceName}.vault.azure.net";
 
         /// <summary>
+        /// Gets or sets the name of the key vault instance.
+        /// </summary>
+        /// <value>
+        /// The name of the key vault instance.
+        /// </value>
+        [Required]
+        public string KeyVaultInstanceName { get; set; }
+
+        /// <summary>
         /// Gets or sets the application identifier.
         /// </summary>
         /// <value>
         /// The application identifier.
         /// </value>
+        [Required]
         public string AppId { get; set; }
 
         /// <summary>
@@ -80,6 +75,7 @@
         /// <value>
         /// The application secret string.
         /// </value>
+        [Required]
         public string AppSecret { get; set; }
 
         /// <summary>
@@ -88,6 +84,7 @@
         /// <value>
         /// The tenant identifier.
         /// </value>
+        [Required]
         public string TenantId { get; set; }
 
         /// <summary>
@@ -99,33 +96,6 @@
         public override string ToString()
         {
             return $"AppId: {AppId}, TenantId: {TenantId}, KeyVaultInstanceName: {KeyVaultInstanceName}, Uri: {Uri}";
-        }
-
-        /// <summary>
-        /// Ensure mandatory properties are set.
-        /// </summary>
-        /// <exception cref="ArgumentException">
-        /// KeyVaultInstanceName must be set
-        /// or
-        /// AppId must be set
-        /// or
-        /// AppSecret must be set
-        /// or
-        /// TenantId must be set
-        /// </exception>
-        public void Validate()
-        {
-            if (KeyVaultInstanceName.IsNullOrEmpty())
-                throw new ArgumentException("KeyVaultInstanceName must be set");
-
-            if (AppId.IsNullOrEmpty())
-                throw new ArgumentException("AppId must be set");
-
-            if (AppSecret.IsNullOrEmpty())
-                throw new ArgumentException("AppSecret must be set");
-
-            if (TenantId.IsNullOrEmpty())
-                throw new ArgumentException("TenantId must be set");
         }
     }
 }

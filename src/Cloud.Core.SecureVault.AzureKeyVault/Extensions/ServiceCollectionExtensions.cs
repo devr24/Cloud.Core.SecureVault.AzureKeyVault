@@ -10,7 +10,7 @@
     /// <summary>
     /// Class IServiceCollectionExtensions.
     /// </summary>
-    public static class IServiceCollectionExtensions
+    public static class ServiceCollectionExtensions
     {
         /// <summary>
         /// Adds the KeyVault instance, already used on IConfigurationBuilder to the service collection.  This allows it to also be used
@@ -106,7 +106,9 @@
             var instance = new KeyVault(config);
 
             if (!key.IsNullOrEmpty())
+            {
                 instance.Name = key;
+            }
 
             services.AddSingleton<ISecureVault>(instance);
             AddFactoryIfNotAdded(services);

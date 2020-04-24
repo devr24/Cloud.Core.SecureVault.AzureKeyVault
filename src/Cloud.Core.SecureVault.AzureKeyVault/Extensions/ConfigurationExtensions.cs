@@ -12,13 +12,13 @@
     /// <summary>
     /// Class IConfigurationExtensions.
     /// </summary>
-    public static class IConfigurationExtensions
+    public static class ConfigurationExtensions
     {
-        private static ISecureVault _keyVaultInstance { get; set; }
+        private static ISecureVault KeyVaultInstance { get; set; }
 
         internal static ISecureVault GetConfigKeyVault(this IConfiguration config)
         {
-            return _keyVaultInstance;
+            return KeyVaultInstance;
         }
 
         /// <summary>
@@ -35,8 +35,10 @@
         /// </exception>
         public static IConfigurationBuilder AddKeyVaultSecrets(this IConfigurationBuilder builder, string instanceName, params string[] @params)
         {
-            var mem = new Dictionary<string, string>();
-            mem.Add("KeyVaultInstanceName", instanceName);
+            var mem = new Dictionary<string, string>
+            {
+                { "KeyVaultInstanceName", instanceName }
+            };
             builder.AddInMemoryCollection(mem);
 
             return AddKeyVaultSecrets(builder, @params.ToList());
@@ -80,7 +82,9 @@
                 var instanceName = builder.Build().GetValue<string>("KeyVaultInstanceName");
 
                 if (instanceName.IsNullOrEmpty())
+                {
                     throw new InvalidOperationException("Expecting setting \"KeyVaultInstanceName\" to infer instance name");
+                }
 
                 var vault = new KeyVault(new MsiConfig { KeyVaultInstanceName = instanceName });
                 var secrets = new List<KeyValuePair<string, string>>();
@@ -109,7 +113,7 @@
                 builder.AddInMemoryCollection(secrets);
 
                 // Keep track of instance.
-                _keyVaultInstance = vault;
+                KeyVaultInstance = vault;
 
                 // Return updated builder.
                 return builder;
@@ -156,7 +160,7 @@
                 builder.AddInMemoryCollection(secrets);
 
                 // Keep track of instance.
-                _keyVaultInstance = vault;
+                KeyVaultInstance = vault;
 
                 // Return updated builder.
                 return builder;
@@ -203,7 +207,7 @@
                 builder.AddInMemoryCollection(secrets);
 
                 // Keep track of instance.
-                _keyVaultInstance = vault;
+                KeyVaultInstance = vault;
 
                 // Return updated builder.
                 return builder;

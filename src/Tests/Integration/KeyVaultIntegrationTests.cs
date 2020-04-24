@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Cloud.Core.SecureVault.AzureKeyVault.Config;
 using Cloud.Core.Testing;
 using FluentAssertions;
@@ -33,7 +34,10 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         [Fact]
         public void Test_KeyVault_MsiError()
         {
+            // Arrange
             var kvClient = new KeyVault(new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName") });
+
+            // Act/Assert
             Assert.Throws<KeyVaultErrorException>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
         }
 
@@ -41,6 +45,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         [Fact]
         public void Test_ConfigExtensions_AddKeyVault()
         {
+            // Arrange
             AssertExtensions.DoesNotThrow(() =>
             {
                 _kvClient.SetSecret("test1", "test1").GetAwaiter().GetResult();
@@ -57,15 +62,18 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
                 AppId = _config.GetValue<string>("AppId"),
             }, new[] { "test1" });
 
+            // Act
             var builtConfig = config.Build();
+
+            // Assert
             builtConfig.GetValue<string>("test1").Should().Be("test1");
         }
-
 
         /// <summary>Check the config collection extension method loads secrets as expected.</summary>
         [Fact]
         public void Test_ConfigExtensions_AddKeyVaultToServiceCollection()
         {
+            // Arrange
             AssertExtensions.DoesNotThrow(() => _kvClient.SetSecret("test1", "test1").GetAwaiter().GetResult());
 
             var config = new ConfigurationBuilder();
@@ -81,13 +89,14 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             var builtConfig = config.Build();
             builtConfig.GetValue<string>("test1").Should().Be("test1");
 
-            var serviceCollection = new FakeServiceCollection();
+            // Act
+            var serviceCollection = new ServiceCollection();
             serviceCollection.AddKeyVaultFromConfiguration(builtConfig);
+            serviceCollection.Any(x => x.ServiceType == typeof(ISecureVault)).Should().BeTrue();
 
-            var descriptor = new ServiceDescriptor(typeof(ISecureVault), typeof(KeyVault));
-            serviceCollection.Contains(descriptor).Should().BeTrue();
+            var keyVaultService = serviceCollection.BuildServiceProvider().GetService<ISecureVault>();
 
-            var keyVaultService = (ISecureVault)serviceCollection.GetService(descriptor);
+            // Assert
             keyVaultService.GetSecret("test1").GetAwaiter().GetResult().Should().Be("test1");
         }
 
@@ -95,10 +104,13 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         [Fact]
         public void Test_ConfigExtensions_AddKeyVaultMsi()
         {
+            // Arrange
             var config = new ConfigurationBuilder();
 
+            // Assert
             Assert.Throws<InvalidOperationException>(() =>
             {
+                // Act
                 config.AddKeyVaultSecrets(
                     new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName") },
                     new[] { "test1" });
@@ -109,10 +121,13 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         [Fact]
         public void Test_ConfigExtensions_AddKeyVaultDefaultsToMsi()
         {
+            // Arrange
             var config = new ConfigurationBuilder();
 
+            // Assert
             Assert.Throws<InvalidOperationException>(() =>
             {
+                // Act
                 config.AddKeyVaultSecrets("test1", "test2", "test3", "test4");
             });
         }
@@ -121,94 +136,22 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         [Fact]
         public void Test_ConfigExtensions_AddKeyVault_IncorrectInstanceName()
         {
+            // Arrange
             AssertExtensions.DoesNotThrow(() => _kvClient.SetSecret("test1", "test1").GetAwaiter().GetResult());
 
             var config = new ConfigurationBuilder();
-
+            
+            // Assert
             Assert.Throws<InvalidOperationException>(() =>
-            config.AddKeyVaultSecrets(new ServicePrincipleConfig
-            {
-                KeyVaultInstanceName = "test",
-                AppSecret = "test",
-                TenantId = "test",
-                AppId = "test"
-            }, new[] { "test1" }));
-        }
-    }
 
-    public class FakeServiceCollection : IServiceCollection
-    {
-        IEnumerable<ServiceDescriptor> _serviceDescriptors = new List<ServiceDescriptor>();
-
-        public IEnumerator<ServiceDescriptor> GetEnumerator()
-        {
-            return _serviceDescriptors.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Add(ServiceDescriptor item)
-        {
-            ((List<ServiceDescriptor>)_serviceDescriptors).Add(item);
-        }
-
-        public void Clear()
-        {
-            ((List<ServiceDescriptor>)_serviceDescriptors).Clear();
-        }
-
-        public bool Contains(ServiceDescriptor item)
-        {
-            return IndexOf(item) != -1;
-        }
-
-        public void CopyTo(ServiceDescriptor[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Remove(ServiceDescriptor item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Count { get; }
-        public bool IsReadOnly { get; }
-        public int IndexOf(ServiceDescriptor item)
-        {
-            for (int i = 0; i < ((List<ServiceDescriptor>)_serviceDescriptors).Count; i++)
-            {
-                if (((List<ServiceDescriptor>)_serviceDescriptors)[i].ServiceType == item?.ServiceType)
-                    return i;
-            }
-
-            return -1;
-        }
-
-        public object GetService(ServiceDescriptor item)
-        {
-            var index = IndexOf(item);
-            var serviceDescriptor = ((List<ServiceDescriptor>)_serviceDescriptors)[index];
-            return serviceDescriptor.ImplementationInstance;
-        }
-
-        public void Insert(int index, ServiceDescriptor item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveAt(int index)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ServiceDescriptor this[int index]
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+                // Act
+                config.AddKeyVaultSecrets(new ServicePrincipleConfig
+                {
+                    KeyVaultInstanceName = "test",
+                    AppSecret = "test",
+                    TenantId = "test",
+                    AppId = "test"
+                }, new[] { "test1" }));
         }
     }
 }
