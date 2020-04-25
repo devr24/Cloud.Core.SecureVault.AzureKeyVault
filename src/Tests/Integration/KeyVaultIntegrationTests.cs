@@ -3,7 +3,7 @@ using System.Linq;
 using Cloud.Core.SecureVault.AzureKeyVault.Config;
 using Cloud.Core.Testing;
 using FluentAssertions;
-using Microsoft.Azure.KeyVault.Models;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -36,7 +36,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             var kvClient = new KeyVault(new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("InstanceName") });
 
             // Act/Assert
-            Assert.Throws<KeyVaultErrorException>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
+            Assert.Throws<AzureServiceTokenProviderException>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
         }
 
         /// <summary>Check the config collection extension method loads secrets as expected.</summary>
