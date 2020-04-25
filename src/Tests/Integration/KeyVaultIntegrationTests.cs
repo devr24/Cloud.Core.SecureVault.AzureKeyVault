@@ -110,7 +110,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             {
                 // Act
                 config.AddKeyVaultSecrets(
-                    new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("InstanceName") },
+                    new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("DoesNotExist") },
                     new[] { "test1" });
             });
         }
