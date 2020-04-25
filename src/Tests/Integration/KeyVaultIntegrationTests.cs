@@ -38,7 +38,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             // Act/Assert
             kvClient.Name.Should().Be(_config.GetValue<string>("InstanceName"));
             (kvClient.Config as MsiConfig).Should().NotBeNull();
-            Assert.Throws<Exception>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
+            Assert.Throws<AzureServiceTokenProviderException>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
         }
 
         /// <summary>Check the config collection extension method loads secrets as expected.</summary>
