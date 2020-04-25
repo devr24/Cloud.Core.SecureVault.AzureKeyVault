@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using Microsoft.Azure.KeyVault.Models;
-
-namespace Cloud.Core.SecureVault.AzureKeyVault
+﻿namespace Cloud.Core.SecureVault.AzureKeyVault
 {
     using Config;
     using System;
-    using Microsoft.Azure.KeyVault;
     using System.Threading.Tasks;
+    using System.Diagnostics.CodeAnalysis;
+    using Microsoft.Azure.KeyVault;
     using Microsoft.IdentityModel.Clients.ActiveDirectory;
     using Microsoft.Azure.Services.AppAuthentication;
-    using System.Diagnostics.CodeAnalysis;
+    using Microsoft.Azure.KeyVault.Models;
 
     /// <summary>
     /// Azure KeyVault specific implementation of Secure Vault.
