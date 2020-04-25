@@ -48,23 +48,6 @@
         /// Adds the key vault secrets specified.  Uses Msi auth and builds the instance name on the fly.
         /// Needs config value "KeyVaultInstanceName" to work.
         /// </summary>
-        /// <param name="builder">The builder to extend.</param>
-        /// <param name="params">The list of keys to load.</param>
-        /// <returns>IConfigurationBuilder with param keys as settings.</returns>
-        /// <exception cref="InvalidOperationException">
-        /// Expecting setting \"KeyVaultInstanceName\" to infer instance name
-        /// or
-        /// Problem occurred retrieving secrets from KeyVault using Managed Identity
-        /// </exception>
-        public static IConfigurationBuilder AddKeyVaultSecrets(this IConfigurationBuilder builder, params string[] @params)
-        {
-            return AddKeyVaultSecrets(builder, @params.ToList());
-        }
-
-        /// <summary>
-        /// Adds the key vault secrets specified.  Uses Msi auth and builds the instance name on the fly.
-        /// Needs config value "KeyVaultInstanceName" to work.
-        /// </summary>
         /// <param name="builder">The builder.</param>
         /// <param name="keys">The list of keys to load.</param>
         /// <param name="throwNotFoundErrors">If {true}, when a key is missing an invalid operation exception will be thrown. If {false}, the

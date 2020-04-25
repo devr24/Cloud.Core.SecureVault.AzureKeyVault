@@ -1,7 +1,7 @@
 ﻿namespace Cloud.Core.SecureVault.AzureKeyVault
 {
     using Config;
-    using System;
+    using System;using System.Net;
     using System.Threading.Tasks;
     using System.Diagnostics.CodeAnalysis;
     using Microsoft.Azure.KeyVault;
@@ -22,7 +22,17 @@
 
         private IKeyVaultClient _client; // only to be used by the "Client" property.
 
+        /// <summary>
+        /// Gets or sets the instance name for the implementor of the INamedInstance interface.
+        /// </summary>
+        /// <value>The instance name.</value>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
+        public object Config { get; internal set; }
 
         internal IKeyVaultClient Client
         {
@@ -58,6 +68,7 @@
             MsiConfig = config;
             InstanceUri = config.Uri;
             Name = config.KeyVaultInstanceName;
+            Config = config;
         }
 
         /// <summary>Initializes a new instance of the KeyVault class using Service Principle security.</summary>
@@ -70,6 +81,7 @@
             ServicePrincipleConfig = config;
             InstanceUri = config.Uri;
             Name = config.KeyVaultInstanceName;
+            Config = config;
         }
 
         /// <inheritdoc />
@@ -87,7 +99,7 @@
                 await Client.SetSecretAsync(InstanceUri, key, value);
             }
             catch (KeyVaultErrorException e)
-                when (e.Message.Contains("Conflict"))
+                when (e.Response.StatusCode == HttpStatusCode.Conflict)
             {
                 // This process kicks in when a soft delete has occurred.  Calling the recover will force the soft deleted
                 // key to be recovered, and then it can be set again.

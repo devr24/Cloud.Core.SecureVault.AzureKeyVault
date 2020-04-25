@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cloud.Core.SecureVault.AzureKeyVault.Config;
 using Cloud.Core.Testing;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -10,7 +12,31 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
 {
     [IsUnit]
     public class KeyVaultUnitTests
-    {
+    {        
+        /// <summary>Check the ISecureVault is added to the builder collection when using the new extension method.</summary>
+        [Fact]
+        public void Test_KeyVault_BuilderAddKeyVault()
+        {
+            // Arrange - Principle needs "Set" permissions to run this.
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => builder.AddKeyVaultSecrets(instanceName: null, "param1", "param2"));
+        }
+
+        /// <summary>Check the ISecureVault is added to the builder collection when using the new extension method.</summary>
+        [Fact]
+        public void Test_KeyVault_Builder_AddKeyVaultList()
+        {
+            // Arrange - Principle needs "Set" permissions to run this.
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+
+            builder.AddInMemoryCollection(new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("KeyVaultInstanceName", "Sample") });
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => builder.AddKeyVaultSecrets(new List<string> { "param1", "param2" }));
+        }
+
         /// <summary>Check the ISecureVault is added to the service collection when using the new extension method.</summary>
         [Fact]
         public void Test_KeyVault_ServiceCollectionAddKeyVault()

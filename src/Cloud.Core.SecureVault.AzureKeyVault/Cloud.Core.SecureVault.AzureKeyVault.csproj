@@ -16,6 +16,7 @@
     <ProjectGuid>{9a5bfa81-df50-4f98-9054-658107d9096a}</ProjectGuid>
     <RepositoryUrl>Cloud.Core.SecureVault.AzureKeyVault</RepositoryUrl>
     <RepositoryType>Private</RepositoryType>
+    <DocumentationFile>Cloud.Core.SecureVault.AzureKeyVault.xml</DocumentationFile>
   </PropertyGroup>
   
   <ItemGroup>
