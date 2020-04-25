@@ -52,7 +52,7 @@
         public KeyVault([NotNull] MsiConfig config)
         {
             // Ensure the required config values are all set.
-            config.Validate();
+            config.ThrowIfInvalid();
 
             MsiConfig = config;
             InstanceUri = config.Uri;
@@ -64,7 +64,7 @@
         public KeyVault([NotNull] ServicePrincipleConfig config)
         {
             // Ensure the required config values are all set.
-            config.Validate();
+            config.ThrowIfInvalid();
 
             ServicePrincipleConfig = config;
             InstanceUri = config.Uri;

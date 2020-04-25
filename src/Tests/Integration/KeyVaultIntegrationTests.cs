@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Cloud.Core.SecureVault.AzureKeyVault.Config;
 using Cloud.Core.Testing;
@@ -23,7 +21,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             _config = new ConfigurationBuilder().AddJsonFile("appSettings.json").Build();
             _kvClient = new KeyVault(new ServicePrincipleConfig
             {
-                KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName"),
+                KeyVaultInstanceName = _config.GetValue<string>("InstanceName"),
                 AppSecret = _config.GetValue<string>("AppSecret"),
                 TenantId = _config.GetValue<string>("TenantId"),
                 AppId = _config.GetValue<string>("AppId"),
@@ -35,7 +33,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
         public void Test_KeyVault_MsiError()
         {
             // Arrange
-            var kvClient = new KeyVault(new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName") });
+            var kvClient = new KeyVault(new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("InstanceName") });
 
             // Act/Assert
             Assert.Throws<KeyVaultErrorException>(() => kvClient.GetSecret("test").GetAwaiter().GetResult());
@@ -56,7 +54,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
 
             config.AddKeyVaultSecrets(new ServicePrincipleConfig
             {
-                KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName"),
+                KeyVaultInstanceName = _config.GetValue<string>("InstanceName"),
                 AppSecret = _config.GetValue<string>("AppSecret"),
                 TenantId = _config.GetValue<string>("TenantId"),
                 AppId = _config.GetValue<string>("AppId"),
@@ -80,7 +78,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
 
             config.AddKeyVaultSecrets(new ServicePrincipleConfig
             {
-                KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName"),
+                KeyVaultInstanceName = _config.GetValue<string>("InstanceName"),
                 AppSecret = _config.GetValue<string>("AppSecret"),
                 TenantId = _config.GetValue<string>("TenantId"),
                 AppId = _config.GetValue<string>("AppId"),
@@ -102,7 +100,7 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
 
         /// <summary>Check the config extension method throws the expected "invalid operation" error when Msi auth is used but does we do not have msi access.</summary>
         [Fact]
-        public void Test_ConfigExtensions_AddKeyVaultMsi()
+        public void Test_ConfigExtensions_ErrorUsingMsi()
         {
             // Arrange
             var config = new ConfigurationBuilder();
@@ -112,14 +110,14 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             {
                 // Act
                 config.AddKeyVaultSecrets(
-                    new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("KeyVaultInstanceName") },
+                    new MsiConfig { KeyVaultInstanceName = _config.GetValue<string>("InstanceName") },
                     new[] { "test1" });
             });
         }
 
         /// <summary>Check the config extension method throws the expected "invalid operation" error when default (msi) auth is used but does we do not have msi access.</summary>
         [Fact]
-        public void Test_ConfigExtensions_AddKeyVaultDefaultsToMsi()
+        public void Test_ConfigExtensions_ErrorDefaultingToMsi()
         {
             // Arrange
             var config = new ConfigurationBuilder();
