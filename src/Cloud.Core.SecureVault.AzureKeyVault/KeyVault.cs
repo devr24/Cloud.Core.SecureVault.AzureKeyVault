@@ -1,4 +1,7 @@
-﻿namespace Cloud.Core.SecureVault.AzureKeyVault
+﻿using System.Collections.Generic;
+using Microsoft.Azure.KeyVault.Models;
+
+namespace Cloud.Core.SecureVault.AzureKeyVault
 {
     using Config;
     using System;
@@ -81,7 +84,19 @@
         /// <inheritdoc />
         public async Task SetSecret([NotNull] string key, [NotNull] string value)
         {
-            await Client.SetSecretAsync(InstanceUri, key, value);
+            try
+            {
+                await Client.SetSecretAsync(InstanceUri, key, value);
+            }
+            catch (KeyVaultErrorException e)
+                when (e.Message.Contains("Conflict"))
+            {
+                // This process kicks in when a soft delete has occurred.  Calling the recover will force the soft deleted
+                // key to be recovered, and then it can be set again.
+                _ = await Client.RecoverDeletedSecretAsync(InstanceUri, key);
+                await Task.Delay(15000);
+                await Client.SetSecretAsync(InstanceUri, key, value);
+            }
         }
 
         /// <summary>
