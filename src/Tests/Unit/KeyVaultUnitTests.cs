@@ -37,6 +37,19 @@ namespace Cloud.Core.SecureVault.AzureKeyVault.Tests
             Assert.Throws<InvalidOperationException>(() => builder.AddKeyVaultSecrets(new List<string> { "param1", "param2" }));
         }
 
+        /// <summary>Check the ISecureVault is added to the builder collection when using the new extension method.</summary>
+        [Fact]
+        public void Test_KeyVault_Builder_AddKeyVaultMsi()
+        {
+            // Arrange - Principle needs "Set" permissions to run this.
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+
+            builder.AddInMemoryCollection(new List<KeyValuePair<string, string>> { new KeyValuePair<string, string>("KeyVaultInstanceName", "Sample") });
+
+            // Act/Assert
+            Assert.Throws<InvalidOperationException>(() => builder.AddKeyVaultSecrets(new MsiConfig() { KeyVaultInstanceName = "test"}, "param1", "param2"));
+        }
+
         /// <summary>Check the ISecureVault is added to the service collection when using the new extension method.</summary>
         [Fact]
         public void Test_KeyVault_ServiceCollectionAddKeyVault()
