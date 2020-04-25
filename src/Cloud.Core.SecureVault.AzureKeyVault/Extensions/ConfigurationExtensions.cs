@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Extensions.Configuration
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Microsoft.Extensions.Configuration
 {
     using System;
     using System.Collections.Generic;
@@ -58,6 +60,7 @@
         /// or
         /// Problem occurred retrieving secrets from KeyVault using Managed Identity
         /// </exception>
+        [ExcludeFromCodeCoverage] //excluded as Msi isn't part of the build pipeline for testing.
         public static IConfigurationBuilder AddKeyVaultSecrets(this IConfigurationBuilder builder, List<string> keys, bool throwNotFoundErrors = false)
         {
             try
@@ -116,6 +119,7 @@
         /// <param name="keys">The keys for the secrets to lookup.</param>
         /// <returns>IConfigurationBuilder.</returns>
         /// <exception cref="InvalidOperationException">Problem occurred retrieving secrets from KeyVault</exception>
+        [ExcludeFromCodeCoverage] //excluded as Msi isn't part of the build pipeline for testing.
         public static IConfigurationBuilder AddKeyVaultSecrets(this IConfigurationBuilder builder, MsiConfig config, params string[] keys)
         {
             try
