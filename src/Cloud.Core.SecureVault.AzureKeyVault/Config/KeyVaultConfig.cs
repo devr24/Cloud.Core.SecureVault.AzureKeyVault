@@ -1,7 +1,7 @@
 ﻿namespace Cloud.Core.SecureVault.AzureKeyVault.Config
 {
     using System.ComponentModel.DataAnnotations;
-    using Attributes;
+    using Validation;
 
     /// <summary>
     /// Msi Configuration for Azure KeyVault connection.
