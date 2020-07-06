@@ -1,18 +1,19 @@
 ﻿namespace Cloud.Core.SecureVault.AzureKeyVault
 {
-    using Config;
-    using System;using System.Net;
-    using System.Threading.Tasks;
+    using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Config;
     using Microsoft.Azure.KeyVault;
-    using Microsoft.IdentityModel.Clients.ActiveDirectory;
-    using Microsoft.Azure.Services.AppAuthentication;
     using Microsoft.Azure.KeyVault.Models;
+    using Microsoft.Azure.Services.AppAuthentication;
+    using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
     /// <summary>
     /// Azure KeyVault specific implementation of Secure Vault.
     /// </summary>
-    /// <seealso cref="Cloud.Core.ISecureVault" />
+    /// <seealso cref="ISecureVault" />
     public class KeyVault : ISecureVault
     {
         internal readonly MsiConfig MsiConfig;

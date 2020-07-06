@@ -1,15 +1,14 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Microsoft.Extensions.Configuration
+﻿namespace Microsoft.Extensions.Configuration
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Net;
+    using Azure.KeyVault.Models;
     using Cloud.Core;
     using Cloud.Core.SecureVault.AzureKeyVault;
     using Cloud.Core.SecureVault.AzureKeyVault.Config;
-    using Azure.KeyVault.Models;
 
     /// <summary>
     /// Class IConfigurationExtensions.
@@ -84,10 +83,9 @@ namespace Microsoft.Extensions.Configuration
                         secrets.Add(new KeyValuePair<string, string>(key, value));
                     }
                     catch (KeyVaultErrorException e)
-                        when (e.Response.StatusCode == HttpStatusCode.NotFound)
                     { 
                         // Throw an exception if requested.
-                        if (throwNotFoundErrors)
+                        if (e.Response.StatusCode == HttpStatusCode.NotFound && throwNotFoundErrors)
                             throw;
 
                         // Do nothing if it fails to find the value.
@@ -96,7 +94,10 @@ namespace Microsoft.Extensions.Configuration
                 }
 
                 // Add them to config.
-                builder.AddInMemoryCollection(secrets);
+                if (secrets.Any())
+                {
+                    builder.AddInMemoryCollection(secrets);
+                }
 
                 // Keep track of instance.
                 KeyVaultInstance = vault;
@@ -135,8 +136,7 @@ namespace Microsoft.Extensions.Configuration
                         var value = vault.GetSecret(key).GetAwaiter().GetResult();
                         secrets.Add(new KeyValuePair<string, string>(key, value));
                     }
-                    catch (KeyVaultErrorException e) 
-                        when (e.Response.StatusCode == HttpStatusCode.NotFound)
+                    catch (KeyVaultErrorException e)
                     {
                         // Do nothing if it fails to find the value.
                         Console.WriteLine($"Failed to find keyvault setting: {key}, exception: {e.Message}");
@@ -144,7 +144,10 @@ namespace Microsoft.Extensions.Configuration
                 }
 
                 // Add them to config.
-                builder.AddInMemoryCollection(secrets);
+                if (secrets.Any())
+                {
+                    builder.AddInMemoryCollection(secrets);
+                }
 
                 // Keep track of instance.
                 KeyVaultInstance = vault;
@@ -183,7 +186,6 @@ namespace Microsoft.Extensions.Configuration
                         secrets.Add(new KeyValuePair<string, string>(key, value));
                     }
                     catch (KeyVaultErrorException e)
-                        when (e.Response.StatusCode == HttpStatusCode.NotFound)
                     {
                         // Do nothing if it fails to find the value.
                         Console.WriteLine($"Failed to find keyvault setting: {key}, exception: {e.Message}");
@@ -191,7 +193,10 @@ namespace Microsoft.Extensions.Configuration
                 }
 
                 // Add them to config.
-                builder.AddInMemoryCollection(secrets);
+                if (secrets.Any())
+                {
+                    builder.AddInMemoryCollection(secrets);
+                }
 
                 // Keep track of instance.
                 KeyVaultInstance = vault;
