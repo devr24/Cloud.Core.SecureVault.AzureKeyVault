@@ -85,14 +85,23 @@
             Config = config;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Retrieves a secret from Key Vault.
+        /// </summary>
+        /// <param name="key">Secret key name to retrieve.</param>
+        /// <returns>Awaitable task returning the string secret value.</returns>
         public async Task<string> GetSecret([NotNull] string key)
         {
             var secret = await Client.GetSecretAsync(InstanceUri, key);
             return secret.Value;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Set a secret in Key Vault.
+        /// </summary>
+        /// <param name="key">Secret key name.</param>
+        /// <param name="value">Value of the secret.</param>
+        /// <returns>Awaitable task.</returns>
         public async Task SetSecret([NotNull] string key, [NotNull] string value)
         {
             try
